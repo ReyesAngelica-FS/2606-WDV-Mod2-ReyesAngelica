@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StitchFlow Test Client</title>
+    </head>
+    <body>
+        <h1>🧵 StitchFlow Test Client</h1>
+
+        <button id="alertBtn">Send Machine Alert</button>
+
+        <div id="status"></div>
+
+        <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
+        <script>
+            const socket = io("http://localhost:3001");
+
+            const status = document.getElementById("status");
+
+            socket.on("connect", () => {
+                status.innerHTML += `<p>✅ Connected: ${socket.id}</p>`;
+            });
+
+            socket.on("state-update", (data) => {
+                status.innerHTML += `
+                    <pre>
+                        ${JSON.stringify(data, null, 2)}
+                    </pre>
+                `;
+            });
+
+            document
+            .getElementById("alertBtn")
+            .addEventListener("click", () => {
+                socket.emit(
+                "machine-alert",
+                "Machine 3 thread break detected!"
+                );
+            });
+        </script>
+    </body>
+</html>
