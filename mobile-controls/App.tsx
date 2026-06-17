@@ -40,11 +40,11 @@ export default function App() {
       </View>
 
       <View style={styles.card}>
-        <SpeedControl />
+        <SpeedControl onCommand={sendCommand} />
       </View>
 
       <View style={styles.card}>
-        <ThreadControl />
+        <ThreadControl onCommand={sendCommand} />
       </View>
 
       <EmergencyStop onCommand={sendCommand} />
