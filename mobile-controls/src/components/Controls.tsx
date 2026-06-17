@@ -1,11 +1,15 @@
 import { View, Button } from "react-native";
 
-export default function Controls() {
+type ControlsProps = {
+    onCommand: (command: string) => void;
+};
+
+export default function Controls({ onCommand }: ControlsProps) {
     return (
         <View>
-            <Button title="Start Job" onPress={() => {}} />
-            <Button title="Pause Job" onPress={() => {}} />
-            <Button title="Complete Job" onPress={() => {}} />
+        <Button title="Start Job" onPress={() => onCommand      ("START_JOB")} />
+        <Button title="Pause Job" onPress={() => onCommand("PAUSE_JOB")} />
+        <Button title="Complete Job" onPress={() => onCommand("COMPLETE_JOB")} />
         </View>
     );
 }

@@ -1,11 +1,15 @@
 import { Button } from "react-native";
 
-export default function EmergencyStop() {
+type EmergencyStopProps = {
+    onCommand: (command: string) => void;
+};
+
+export default function EmergencyStop({ onCommand }: EmergencyStopProps) {
     return (
         <Button
         title="EMERGENCY STOP"
         color="red"
-        onPress={() => {}}
+        onPress={() => onCommand("EMERGENCY_STOP")}
         />
     );
 }
