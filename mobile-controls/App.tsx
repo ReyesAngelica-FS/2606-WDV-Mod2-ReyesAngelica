@@ -7,7 +7,7 @@ import ThreadControl from "./src/components/ThreadControl";
 import useMachineConnection from "./src/hooks/useMachineConnection";
 
 export default function App() {
-  const { connected, sendCommand } = useMachineConnection();
+  const { connected, state, sendCommand } = useMachineConnection();
 
   return (
     <View style={styles.container}>
@@ -17,6 +17,23 @@ export default function App() {
       <Text style={styles.status}>
         {connected ? "✅ Connected to server" : "❌ Not connected"}
       </Text>
+
+      <View style={styles.dashboardRow}>
+        <View style={styles.dashboardCard}>
+          <Text style={styles.cardNumber}>{state.connectedDevices}</Text>
+          <Text>Devices</Text>
+        </View>
+
+        <View style={styles.dashboardCard}>
+          <Text style={styles.cardNumber}>{state.activeJobs.length}</Text>
+          <Text>Jobs</Text>
+        </View>
+
+        <View style={styles.dashboardCard}>
+          <Text style={styles.cardNumber}>{state.alerts.length}</Text>
+          <Text>Alerts</Text>
+        </View>
+      </View>
 
       <View style={styles.card}>
         <Controls onCommand={sendCommand} />
@@ -56,6 +73,26 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#6b1f3a",
     marginBottom: 20,
+  },
+  dashboardRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+  dashboardCard: {
+    flex: 1,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 16,
+    marginHorizontal: 4,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ead0c4",
+  },
+  cardNumber: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#6b1f3a",
   },
   card: {
     backgroundColor: "#fffaf5",

@@ -1,37 +1,43 @@
 import { useEffect, useState } from "react";
-import { io, Socket } from "socket.io-client";
+import { io } from "socket.io-client";
 
-const SERVER_URL = "http://localhost:3001";
+const socket = io("http://localhost:3001");
 
 export default function useMachineConnection() {
-    const [socket, setSocket] = useState<Socket | null>(null);
     const [connected, setConnected] = useState(false);
+    const [state, setState] = useState({
+        connectedDevices: 0,
+        activeJobs: [],
+        alerts: [],
+    });
 
     useEffect(() => {
-        const newSocket = io(SERVER_URL);
-
-        newSocket.on("connect", () => {
-            setConnected(true);
-            console.log("Mobile connected:", newSocket.id);
+        socket.on("connect", () => {
+        setConnected(true);
         });
 
-        newSocket.on("disconnect", () => {
-            setConnected(false);
+        socket.on("disconnect", () => {
+        setConnected(false);
         });
 
-        setSocket(newSocket);
+        socket.on("state-update", (data) => {
+        setState(data);
+        });
 
         return () => {
-        newSocket.disconnect();
+        socket.off("connect");
+        socket.off("disconnect");
+        socket.off("state-update");
         };
     }, []);
 
     const sendCommand = (command: string) => {
-        socket?.emit("mobile-command", command);
+        socket.emit("mobile-command", command);
     };
 
     return {
         connected,
+        state,
         sendCommand,
     };
 }
