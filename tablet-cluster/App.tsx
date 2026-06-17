@@ -1,112 +1,138 @@
-import { useEffect, useState } from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
-import { io } from "socket.io-client";
-
-interface StitchFlowState {
-  connectedDevices: number;
-  activeJobs: string[];
-  alerts: string[];
-}
-
-const socket = io("http://localhost:3001");
+import { StyleSheet, Text, View } from "react-native";
+import useDashboardConnection from "./src/hooks/useDashboardConnection";
 
 export default function App() {
-  const [state, setState] = useState<StitchFlowState>({
-    connectedDevices: 0,
-    activeJobs: [],
-    alerts: [],
-  });
-
-  useEffect(() => {
-    socket.on("connect", () => {
-      console.log("Tablet connected:", socket.id);
-    });
-
-    socket.on("state-update", (data: StitchFlowState) => {
-      setState(data);
-    });
-
-    return () => {
-      socket.off("connect");
-      socket.off("state-update");
-    };
-  }, []);
+  const { connected, dashboardState } = useDashboardConnection();
+  const machine = dashboardState.machines[0];
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.title}>🧵 StitchFlow Tablet Dashboard</Text>
       <Text style={styles.subtitle}>Live production monitoring</Text>
 
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Connected Devices</Text>
-        <Text style={styles.number}>{state.connectedDevices}</Text>
+      <Text style={styles.status}>
+        {connected ? "✅ Connected to server" : "❌ Not connected"}
+      </Text>
+
+      <View style={styles.grid}>
+        <View style={styles.card}>
+          <Text style={styles.number}>{dashboardState.connectedDevices}</Text>
+          <Text style={styles.label}>Connected Devices</Text>
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.number}>{dashboardState.activeJobs}</Text>
+          <Text style={styles.label}>Active Jobs</Text>
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.number}>{dashboardState.alerts.length}</Text>
+          <Text style={styles.label}>Machine Alerts</Text>
+        </View>
       </View>
 
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Active Jobs</Text>
-        <Text style={styles.number}>{state.activeJobs.length}</Text>
+      <View style={styles.machineCard}>
+        <Text style={styles.sectionTitle}>Machine 1 Status</Text>
+
+        <Text style={styles.machineText}>Status: {machine.status}</Text>
+        <Text style={styles.machineText}>Speed: {machine.speed}%</Text>
+        <Text style={styles.machineText}>Thread Tension: {machine.tension}</Text>
+        <Text style={styles.machineText}>Current Job: {machine.currentJob}</Text>
+        <Text style={styles.machineText}>Progress: {machine.progress}%</Text>
       </View>
 
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Machine Alerts</Text>
+      <View style={styles.alertCard}>
+        <Text style={styles.sectionTitle}>Recent Alerts</Text>
 
-        {state.alerts.length === 0 ? (
-          <Text style={styles.emptyText}>No alerts yet.</Text>
+        {dashboardState.alerts.length === 0 ? (
+          <Text style={styles.machineText}>No alerts yet.</Text>
         ) : (
-          state.alerts.map((alert, index) => (
+          dashboardState.alerts.slice(-3).map((alert, index) => (
             <Text key={index} style={styles.alertText}>
               ⚠️ {alert}
             </Text>
           ))
         )}
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    padding: 30,
-    backgroundColor: "#f8efe9",
+    flex: 1,
+    padding: 24,
+    backgroundColor: "#fff7f2",
   },
   title: {
-    fontSize: 34,
-    fontWeight: "bold",
-    color: "#6b2135",
-    marginBottom: 8,
+    fontSize: 30,
+    fontWeight: "900",
+    color: "#6b1f3a",
   },
   subtitle: {
-    fontSize: 18,
-    color: "#8a6757",
-    marginBottom: 24,
-  },
-  card: {
-    backgroundColor: "#fffaf5",
-    borderRadius: 20,
-    padding: 24,
-    marginBottom: 18,
-    borderWidth: 1,
-    borderColor: "#e6c9bc",
-  },
-  cardTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#6b2135",
-    marginBottom: 10,
-  },
-  number: {
-    fontSize: 42,
-    fontWeight: "bold",
-    color: "#8f2f45",
-  },
-  emptyText: {
     fontSize: 16,
     color: "#8a6757",
+    marginBottom: 12,
+  },
+  status: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#6b1f3a",
+    marginBottom: 20,
+  },
+  grid: {
+    flexDirection: "row",
+    gap: 12,
+    marginBottom: 20,
+  },
+  card: {
+    flex: 1,
+    backgroundColor: "#fffaf5",
+    borderColor: "#ead0c4",
+    borderWidth: 1,
+    borderRadius: 18,
+    padding: 20,
+    alignItems: "center",
+  },
+  number: {
+    fontSize: 36,
+    fontWeight: "900",
+    color: "#6b1f3a",
+  },
+  label: {
+    fontSize: 14,
+    color: "#4a2a2a",
+    marginTop: 4,
+  },
+  machineCard: {
+    backgroundColor: "#fffaf5",
+    borderColor: "#ead0c4",
+    borderWidth: 1,
+    borderRadius: 18,
+    padding: 20,
+    marginBottom: 16,
+  },
+  alertCard: {
+    backgroundColor: "#fffaf5",
+    borderColor: "#ead0c4",
+    borderWidth: 1,
+    borderRadius: 18,
+    padding: 20,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#6b1f3a",
+    marginBottom: 10,
+  },
+  machineText: {
+    fontSize: 16,
+    marginBottom: 6,
+    color: "#3a2a2a",
   },
   alertText: {
     fontSize: 16,
-    color: "#6b2135",
-    marginBottom: 8,
+    marginBottom: 6,
+    color: "#b00020",
   },
 });
