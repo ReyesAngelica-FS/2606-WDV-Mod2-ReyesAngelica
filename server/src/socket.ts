@@ -31,17 +31,34 @@ export function setupSocket(io: Server) {
             break;
 
             case "PAUSE_JOB":
-            console.log("⏸ Job Paused");
+                console.log("⏸ Job Paused");
             break;
 
             case "COMPLETE_JOB":
-            stitchFlowState.activeJobs = [];
-            console.log("✅ Job Completed");
+                stitchFlowState.activeJobs = [];
+                console.log("✅ Job Completed");
             break;
 
             case "EMERGENCY_STOP":
-            console.log("🚨 EMERGENCY STOP ACTIVATED");
-            stitchFlowState.alerts.push("Emergency Stop Activated");
+                console.log("🚨 EMERGENCY STOP ACTIVATED");
+                stitchFlowState.alerts.push("Emergency Stop Activated");
+            break;
+
+            default:
+                if (command.startsWith("SPEED_")) {
+                    const speed = Number(command.replace("SPEED_", ""));
+                    console.log(`⚙️ Speed Changed: ${speed}%`);
+
+                    stitchFlowState.alerts.push(`Speed changed to ${speed}%`);
+                }
+
+                if (command.startsWith("TENSION_")) {
+                    const tension = Number(command.replace("TENSION_", ""));
+                    console.log(`🧵 Thread Tension Changed: ${tension}`);
+
+                    stitchFlowState.alerts.push(`Thread tension changed to ${tension}`);
+                }
+
             break;
         }
 
