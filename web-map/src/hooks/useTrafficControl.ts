@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import { WebDashboardState } from "../types/web";
+import type { WebDashboardState } from "../types/web";
 
 const socket = io("http://localhost:3001");
 
