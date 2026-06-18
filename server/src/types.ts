@@ -1,4 +1,4 @@
-export type MachineStatus = "idle" | "running" | "paused" | "alert";
+export type MachineStatus = "idle" | "running" | "paused" | "alert" | "stopped";
 
 export interface StitchJob {
     id: string;
@@ -13,4 +13,7 @@ export interface StitchFlowState {
     connectedDevices: number;
     activeJobs: StitchJob[];
     alerts: string[];
+    machineSpeed: number;
+    threadTension: number;
+    machineStatus: MachineStatus;
 }
