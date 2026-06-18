@@ -40,14 +40,17 @@ export default function useDashboardConnection() {
                 machines: [
                     {
                         id: 1,
-                        status: data.activeJobs?.length > 0 ? "running" : "idle",
-                        speed: 50,
-                        tension: 5,
+                        status: data.machineStatus ?? "idle",
+                        speed: data.machineSpeed ?? 50,
+                        tension: data.threadTension ?? 5,
                         currentJob:
-                        data.activeJobs?.length > 0
-                            ? "StitchFlow Sample Design"
+                            data.activeJobs?.length > 0
+                            ? data.activeJobs[0].designName
                             : "No active job",
-                        progress: data.activeJobs?.length > 0 ? 45 : 0,
+                        progress:
+                            data.activeJobs?.length > 0
+                            ? data.activeJobs[0].progress
+                            : 0,
                     },
                 ],
             });
