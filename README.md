@@ -290,6 +290,4 @@ Angelica Reyes
 
 Full Sail University
 
-Bachelor of Science — Web Development
-
-2026
+Link to video [https://fullsailedu-my.sharepoint.com/:v:/g/personal/areyes10_student_fullsail_edu/IQBZGF-oYePpS45dHhy41eIIAZISTlisyyA1SK1a13qu1RU?e=4Nouf8&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D]
